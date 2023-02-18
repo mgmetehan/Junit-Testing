@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
@@ -29,9 +31,25 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDto> getUserById(@RequestParam Long id) {
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
         return new ResponseEntity<>(
                 userService.getUserById(id),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<UserResponseDto>> getUserByName(@RequestParam String name) {
+        return new ResponseEntity<>(
+                userService.getUserByName(name),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/spring-data")
+    public ResponseEntity<List<UserResponseDto>> getUserByNameBySpringData(@RequestParam String name) {
+        return new ResponseEntity<>(
+                userService.getUserByNameBySpringData(name),
                 HttpStatus.OK
         );
     }
