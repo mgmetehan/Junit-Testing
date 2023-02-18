@@ -2,6 +2,7 @@ package com.mgmetehan.JunitTesting.controller;
 
 import com.mgmetehan.JunitTesting.dto.request.UserRequestDto;
 import com.mgmetehan.JunitTesting.dto.response.UserResponseDto;
+import com.mgmetehan.JunitTesting.model.User;
 import com.mgmetehan.JunitTesting.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,8 +39,8 @@ public class UserController {
         );
     }
 
-    @GetMapping()
-    public ResponseEntity<List<UserResponseDto>> getUserByName(@RequestParam String name) {
+    @GetMapping("/query")
+    public ResponseEntity<List<User>> getUserByName(@RequestParam String name) {
         return new ResponseEntity<>(
                 userService.getUserByName(name),
                 HttpStatus.OK

@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponseDto> getUserByName(String name) {
+    public List<User> getUserByName(String name) {
         return userRepository.findByName(name);
     }
 

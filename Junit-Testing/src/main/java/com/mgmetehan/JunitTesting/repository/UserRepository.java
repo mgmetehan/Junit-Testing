@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query(nativeQuery = true, value = "SELECT * FROM TBL_USER WHERE name LIKE (%:name%)")
-    List<UserResponseDto> findByName(@Param("name") String name);
+    List<User> findByName(@Param("name") String name);
 
     List<UserResponseDto> findByNameLikeIgnoreCase(String name);
 }
