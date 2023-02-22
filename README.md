@@ -4,12 +4,11 @@ Spring Boot CRUD islemlerine basit bir Junit test ornegi
 ### Tech Stack
 - Java 11
 - Spring Boot
-- Lombok
 - Spring Data
-- REST-API
 - Postgres
-- Lombok
 - Junit5
+- REST-API
+- Lombok
 
 
 ### Requirements
