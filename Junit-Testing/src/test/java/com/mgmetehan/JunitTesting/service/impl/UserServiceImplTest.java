@@ -13,6 +13,8 @@ import com.mgmetehan.JunitTesting.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -25,9 +27,11 @@ import java.util.Optional;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
     @InjectMocks
-    private UserServiceImpl userService;
+    private UserServiceImpl userServiceImpl;
     @Mock
     private UserRepository userRepository;
+    @Captor
+    private ArgumentCaptor<User> userCaptor;
 
     @Test
     @DisplayName("Test createUser called repository")
@@ -44,14 +48,14 @@ public class UserServiceImplTest {
 
         // when
         when(userRepository.save(Mockito.any(User.class))).thenReturn(savedUser);
+        var result = userServiceImpl.createUser(userRequestDto);
 
-        var result = userService.createUser(userRequestDto);
+        verify(userRepository).save(userCaptor.capture());
+        var user = userCaptor.getValue();
 
         // then
-        verify(userRepository).save(any(User.class));
-        assertEquals(savedUser.getName(), result.getName());
-        assertEquals(savedUser.getSurname(), result.getSurname());
-        assertEquals(savedUser.getId(), result.getId());
+        assertEquals(result.getName(), user.getName());
+        assertEquals(result.getSurname(), user.getSurname());
     }
 
     @Test
@@ -65,11 +69,13 @@ public class UserServiceImplTest {
 
         // when
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-
-        var result = userService.getUserById(1L);
+        var result = userServiceImpl.getUserById(1L);
+        var idCaptor = ArgumentCaptor.forClass(Long.class);
 
         // then
+        verify(userRepository).findById(idCaptor.capture());
         verify(userRepository).findById(1L);
+        assertEquals(result.getId(), idCaptor.getValue());
         assertEquals(user.getName(), result.getName());
         assertEquals(user.getSurname(), result.getSurname());
         assertEquals(user.getId(), result.getId());
@@ -89,7 +95,7 @@ public class UserServiceImplTest {
 
         // then
         var ex = assertThrows(UserException.class, () -> {
-            userService.getUserById(1L);
+            userServiceImpl.getUserById(1L);
         });
 
         assertEquals("User not found", ex.getMessage());
@@ -106,11 +112,12 @@ public class UserServiceImplTest {
 
         // when
         when(userRepository.findByName("John")).thenReturn(List.of(user));
-
-        var result = userService.getUserByName("John");
+        var result = userServiceImpl.getUserByName("John");
+        var nameCaptor = ArgumentCaptor.forClass(String.class);
 
         // then
-        verify(userRepository).findByName("John");
+        verify(userRepository).findByName(nameCaptor.capture());
+        assertEquals(user.getName(), nameCaptor.getValue());
         assertEquals(user.getName(), result.get(0).getName());
         assertEquals(user.getSurname(), result.get(0).getSurname());
         assertEquals(user.getId(), result.get(0).getId());
